@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:rive/rive.dart';
+import 'package:rive/rive.dart' hide Animation;
 import '../features/session_generator/session_generator_home_field_view.dart';
 import '../features/progression/progress_view.dart';
 import '../features/leaderboard/leaderboard_view.dart'; // ✅ CHANGED: Leaderboard instead of Saved Drills
 import '../features/profile/profile_view.dart';
 import '../features/create_drill/create_drill_sheet.dart';
 import '../constants/app_theme.dart';
+import '../widgets/rive_asset_widget.dart';
 import '../utils/haptic_utils.dart';
 import '../services/app_state_service.dart'; // ✅ ADDED: Import for loading state checking
 import '../widgets/guest_account_creation_dialog.dart'; // ✅ ADDED: Import reusable dialog
@@ -251,15 +252,10 @@ class _MainTabViewState extends State<MainTabView> {
       curve: Curves.easeInOut,
       width: size,
       height: size,
-      child: RiveAnimation.asset(
-        'assets/rive/$assetName',
+      child: RiveAssetWidget(
+        assetPath: 'assets/rive/$assetName',
         fit: BoxFit.contain,
-        onInit: (artboard) {
-          // Rive asset loaded successfully
-          print('Loaded Rive asset: $assetName');
-        },
-        // Add fallback in case of errors
-        placeHolder: Icon(
+        placeholder: Icon(
           _getFallbackIcon(index),
           size: size,
           color: isSelected ? AppTheme.primaryYellow : Colors.grey.shade600,

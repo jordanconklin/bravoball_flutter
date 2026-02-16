@@ -18,16 +18,16 @@ if (keystorePropertiesFile.exists()) {
 android {
     namespace = "com.bravoball.app.bravoball_flutter"
     compileSdk = flutter.compileSdkVersion
-    ndkVersion = "27.0.12077973"
+    ndkVersion = "28.1.13356709"  // Match Rive override for 16 KB page size (Google Play)
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
         isCoreLibraryDesugaringEnabled = true
     }
 
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_11.toString()
+        jvmTarget = JavaVersion.VERSION_17.toString()
     }
 
     defaultConfig {
@@ -39,8 +39,8 @@ android {
         versionCode = flutter.versionCode
         versionName = flutter.versionName
         
-        // ✅ FIX: Include all architectures to allow upgrades from existing users
-        // This fixes "doesn't allow any existing users to upgrade" error
+        // Include all architectures so existing users can upgrade
+        // 16KB check applies to 64-bit only; Rive 0.14 ships compliant libs
         ndk {
             abiFilters += listOf("armeabi-v7a", "arm64-v8a", "x86", "x86_64")
         }

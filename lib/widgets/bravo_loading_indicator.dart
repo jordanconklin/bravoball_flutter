@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:rive/rive.dart' hide LinearGradient;
+import 'package:rive/rive.dart' hide Animation, LinearGradient;
 import '../constants/app_theme.dart';
+import 'rive_asset_widget.dart';
 import 'dart:math' as math;
 
 /// Simple, Clean Bravo Loading Indicator
@@ -127,8 +128,8 @@ class _BravoLoadingIndicatorState extends State<BravoLoadingIndicator>
             width: 120,
             height: 120,
             child: widget.riveAsset != null
-                ? RiveAnimation.asset(
-                    widget.riveAsset!,
+                ? RiveAssetWidget(
+                    assetPath: widget.riveAsset!,
                     fit: BoxFit.contain,
                   )
                 : Icon(
@@ -391,8 +392,8 @@ class _BravoLoginLoadingIndicatorState extends State<BravoLoginLoadingIndicator>
             width: 120,
             height: 120,
             child: widget.riveAsset != null
-                ? RiveAnimation.asset(
-                    widget.riveAsset!,
+                ? RiveAssetWidget(
+                    assetPath: widget.riveAsset!,
                     fit: BoxFit.contain,
                   )
                 : Icon(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:rive/rive.dart';
+import 'package:rive/rive.dart' hide Animation;
+import '../widgets/rive_asset_widget.dart';
 
 class OnboardingView extends StatelessWidget {
   const OnboardingView({Key? key}) : super(key: key);
@@ -16,8 +17,8 @@ class OnboardingView extends StatelessWidget {
             const SizedBox(height: 48),
             SizedBox(
               height: 220,
-              child: RiveAnimation.asset(
-                'assets/rive/Bravo_Animation.riv',
+              child: RiveAssetWidget(
+                assetPath: 'assets/rive/Bravo_Animation.riv',
                 fit: BoxFit.contain,
               ),
             ),

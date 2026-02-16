@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart'; // ✅ ADDED: For SystemChrome orientation locking
 import 'package:provider/provider.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:rive/rive.dart';
+import 'package:rive/rive.dart' as rive hide Animation;
 import 'views/onboarding_view.dart';
 import 'features/onboarding/onboarding_flow.dart';
 import 'features/auth/login_view.dart';
@@ -17,9 +17,14 @@ import 'services/loading_state_service.dart';
 import 'constants/app_theme.dart';
 import 'config/app_config.dart';
 import 'widgets/bravo_loading_indicator.dart';
+import 'widgets/rive_asset_widget.dart';
 
 // Global flag to track intro animation - persists across widget rebuilds
 bool _hasShownIntroAnimation = false;
+
+// Preloaded intro animation - loaded at startup for instant display
+rive.RiveWidgetController? _introRiveController;
+rive.File? _introRiveFile;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -53,6 +58,22 @@ void main() async {
   
   // Initialize the app state service (after dependencies are ready)
   await AppStateService.instance.initialize();
+  
+  // Initialize Rive native runtime (required for Rive 0.14+)
+  await rive.RiveNative.init();
+  
+  // Preload intro animation for instant display
+  try {
+    _introRiveFile = await rive.File.asset(
+      'assets/rive/BravoBall_Intro.riv',
+      riveFactory: rive.Factory.rive,
+    );
+    if (_introRiveFile != null) {
+      _introRiveController = rive.RiveWidgetController(_introRiveFile!);
+    }
+  } catch (e) {
+    if (kDebugMode) print('Intro preload failed: $e');
+  }
   
   if (kDebugMode) {
     print('✅ All services initialized successfully');
@@ -115,15 +136,21 @@ class _MyAppState extends State<MyApp> {
             const AuthenticationChecker(),
             
             // Intro animation overlay (only on true app startup)
+            // Uses preloaded controller for instant display, no async flash
             if (_isShowingIntro)
               Container(
                 width: MediaQuery.of(context).size.width,
                 height: MediaQuery.of(context).size.height,
                 color: Colors.transparent,
-                child: const RiveAnimation.asset(
-                  'assets/rive/BravoBall_Intro.riv',
-                  fit: BoxFit.cover,
-                ),
+                child: _introRiveController != null
+                    ? rive.RiveWidget(
+                        controller: _introRiveController!,
+                        fit: rive.Fit.cover,
+                      )
+                    : RiveAssetWidget(
+                        assetPath: 'assets/rive/BravoBall_Intro.riv',
+                        fit: BoxFit.cover,
+                      ),
               ),
           ],
         ),

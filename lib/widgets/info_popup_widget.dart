@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:rive/rive.dart' as rive;
+import 'rive_asset_widget.dart';
 import '../constants/app_theme.dart';
 import '../utils/haptic_utils.dart';
 
@@ -47,8 +47,8 @@ class InfoPopupWidget extends StatelessWidget {
                   Container(
                     width: 80,
                     height: 80,
-                    child: rive.RiveAnimation.asset(
-                      'assets/rive/$riveFileName',
+                    child: RiveAssetWidget(
+                      assetPath: 'assets/rive/$riveFileName',
                       fit: BoxFit.contain,
                     ),
                   ),

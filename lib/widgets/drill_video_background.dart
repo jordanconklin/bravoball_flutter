@@ -3,7 +3,8 @@ import 'package:flutter/foundation.dart';
 import 'package:video_player/video_player.dart';
 import 'dart:io';
 import 'dart:ui';
-import 'package:rive/rive.dart' as rive;
+import 'package:rive/rive.dart' as rive hide Animation;
+import 'rive_asset_widget.dart';
 import '../constants/app_theme.dart';
 
 class DrillVideoBackground extends StatefulWidget {
@@ -272,8 +273,8 @@ class _DrillVideoBackgroundState extends State<DrillVideoBackground> {
             Container(
               width: 120,
               height: 120,
-              child: const rive.RiveAnimation.asset(
-                'assets/rive/Bravo_Animation.riv',
+              child: RiveAssetWidget(
+                assetPath: 'assets/rive/Bravo_Animation.riv',
                 fit: BoxFit.contain,
               ),
             ),

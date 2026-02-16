@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:rive/rive.dart' hide LinearGradient;
+import 'package:rive/rive.dart' hide Animation, LinearGradient;
 import '../../constants/app_theme.dart';
+import '../../widgets/rive_asset_widget.dart';
 import '../../services/audio_service.dart';
 import '../../utils/haptic_utils.dart';
 import '../../services/app_rating_service.dart';
@@ -284,8 +285,8 @@ class _SessionCompletionViewState extends State<SessionCompletionView>
         child: SizedBox(
           width: 120,
           height: 120,
-          child: RiveAnimation.asset(
-            'assets/rive/Bravo_Animation.riv',
+          child: RiveAssetWidget(
+            assetPath: 'assets/rive/Bravo_Animation.riv',
             fit: BoxFit.contain,
           ),
         ),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:rive/rive.dart';
+import 'package:rive/rive.dart' hide Animation;
 import 'dart:ui' as ui show Gradient;
 import 'package:flutter/painting.dart' as painting;
 import '../../widgets/bravo_button.dart';
@@ -11,6 +11,7 @@ import '../../services/app_state_service.dart';
 import '../../services/user_manager_service.dart'; // ✅ ADDED: Import UserManagerService for avatar
 import '../../services/audio_service.dart';
 import '../../constants/app_theme.dart';
+import '../../widgets/rive_asset_widget.dart';
 import '../../utils/haptic_utils.dart';
 import '../../utils/avatar_helper.dart'; // ✅ ADDED: Import AvatarHelper for avatar utilities
 import 'session_generator_editor_page.dart';
@@ -123,12 +124,8 @@ class _SessionGeneratorHomeFieldViewState extends State<SessionGeneratorHomeFiel
                     physics: const BouncingScrollPhysics(),
                     child: Column(
                       children: [
-                        // Field area with controlled height
+                        // Field with drill path overlaid on the lower part
                         _buildFieldArea(context, appState),
-                        
-                        // Drill circles and trophy
-                        _buildDrillPath(appState),
-                        
                         const SizedBox(height: 32),
                       ],
                     ),
@@ -271,24 +268,27 @@ class _SessionGeneratorHomeFieldViewState extends State<SessionGeneratorHomeFiel
     );
   }
 
-  // Build the field area with Rive animation, Bravo character, and backpack
+  // Build the field area with Rive animation, Bravo character, backpack, and drill path on top
   Widget _buildFieldArea(BuildContext context, AppStateService appState) {
     final screenWidth = MediaQuery.of(context).size.width;
-    
+    const double fieldHeight = 720;
+    // Total height: field + space for drill path overlaid and extending below
+    const double totalHeight = 1100;
+
     return SizedBox(
-      height: 320, // Reduced height for more compact layout
+      height: totalHeight,
       child: Stack(
-        clipBehavior: Clip.none, // Allow content to overflow to show the top of the field
+        clipBehavior: Clip.none,
         children: [
-          // Rive grass field background - positioned to show goal at the top
+          // Rive grass field - cover fills width; full vertical (goal to bottom)
           Positioned(
-            top: 160, // Positive offset to push field down and show goal at top
+            top: 0,
             left: 0,
             right: 0,
             child: SizedBox(
-              height: 380, // Reduced height for appropriate field size
-              child: RiveAnimation.asset(
-                'assets/rive/Grass_Field.riv',
+              height: fieldHeight,
+              child: RiveAssetWidget(
+                assetPath: 'assets/rive/Grass_Field.riv',
                 fit: BoxFit.cover,
               ),
             ),
@@ -296,21 +296,21 @@ class _SessionGeneratorHomeFieldViewState extends State<SessionGeneratorHomeFiel
           
           // Status message bubble - speech bubble coming from Bravo
           Positioned(
-            top: 100, // Positioned right above Bravo 
-            left: 70,  // Aligned with Bravo's position
-            right: 190, // Give enough space
+            top: 65,
+            left: 70,
+            right: 190,
             child: _buildStatusMessage(appState),
           ),
           
           // Bravo in middle field area
           Positioned(
-            top: 180, // Moved up to be closer to goal area
+            top: 135,
             left: screenWidth * 0.25,
             child: SizedBox(
               width: 110,
               height: 110,
-              child: RiveAnimation.asset(
-                'assets/rive/Bravo_Animation.riv',
+              child: RiveAssetWidget(
+                assetPath: 'assets/rive/Bravo_Animation.riv',
                 fit: BoxFit.contain,
               ),
             ),
@@ -318,17 +318,15 @@ class _SessionGeneratorHomeFieldViewState extends State<SessionGeneratorHomeFiel
           
           // Backpack in middle field area
           Positioned(
-            top: 200, // Moved up to be closer to goal area
+            top: 155,
             right: screenWidth * 0.25,
             child: GestureDetector(
               onTap: () {
-                // ✅ NEW: Check for session progress before allowing access
                 if (appState.hasSessionProgress && !appState.isSessionComplete) {
                   HapticUtils.mediumImpact();
                   _showSessionProgressWarning(context, appState);
                 } else {
-                  // ✅ REMOVED: Trophy restriction - users can always access backpack
-                  HapticUtils.mediumImpact(); // Medium haptic for drill editor access
+                  HapticUtils.mediumImpact();
                   Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (_) => const SessionGeneratorEditorPage(),
@@ -339,18 +337,18 @@ class _SessionGeneratorHomeFieldViewState extends State<SessionGeneratorHomeFiel
               child: SizedBox(
                 width: 90,
                 height: 90,
-                child: RiveAnimation.asset(
-                  'assets/rive/Backpack.riv',
+                child: RiveAssetWidget(
+                  assetPath: 'assets/rive/Backpack.riv',
                   fit: BoxFit.contain,
                 ),
               ),
             ),
           ),
           
-          // Mental Training Alternative - positioned directly above backpack as a glowing option
+          // Mental Training - above backpack
           Positioned(
-            top: 122, // Positioned directly above the backpack
-            right: screenWidth * 0.28, // Same horizontal position as backpack
+            top: 75,
+            right: screenWidth * 0.28,
             child: GestureDetector(
               onTap: () {
                 HapticUtils.mediumImpact();
@@ -391,6 +389,14 @@ class _SessionGeneratorHomeFieldViewState extends State<SessionGeneratorHomeFiel
                 ),
               ),
             ),
+          ),
+          
+          // Ordered drills and trophy - close under Bravo/backpack
+          Positioned(
+            top: 272,
+            left: 0,
+            right: 0,
+            child: _buildDrillPath(appState),
           ),
         ],
       ),

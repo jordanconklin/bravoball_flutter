@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:rive/rive.dart';
+import 'package:rive/rive.dart' hide Animation;
 import '../../constants/app_theme.dart';
+import '../../widgets/rive_asset_widget.dart';
 import '../../services/login_service.dart';
 import 'forgot_password_view.dart';
 import '../../models/login_state_model.dart';
@@ -72,8 +73,8 @@ class _LoginViewState extends State<LoginView> {
                   height: 200,
                   width: 200,
                   margin: const EdgeInsets.symmetric(horizontal: AppTheme.spacingLarge),
-                  child: const RiveAnimation.asset(
-                    'assets/rive/Bravo_Animation.riv',
+                  child: RiveAssetWidget(
+                    assetPath: 'assets/rive/Bravo_Animation.riv',
                     fit: BoxFit.contain,
                   ),
                 ),

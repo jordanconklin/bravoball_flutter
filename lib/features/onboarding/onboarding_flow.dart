@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
-import 'package:rive/rive.dart';
+import 'package:rive/rive.dart' hide Animation;
+import 'dart:ui' as ui;
 import '../../utils/haptic_utils.dart';
 import '../../widgets/typewriter_text.dart'; // ✅ NEW: Import reusable typewriter text
 import 'onboarding_questions.dart';
@@ -11,6 +12,7 @@ import '../../services/onboarding_service.dart';
 import '../../models/onboarding_model.dart';
 import '../../services/user_manager_service.dart'; // ✅ NEW: Import user manager
 import '../../main.dart'; // Import for MyApp
+import '../../widgets/rive_asset_widget.dart';
 
 /// ✅ NEW: Staggered Animation for Elements
 class StaggeredFadeInUp extends StatefulWidget {
@@ -374,8 +376,8 @@ class _OnboardingFlowState extends State<OnboardingFlow> {
             delay: 100, // Reduced from 200
             child: SizedBox(
               height: 250,
-              child: RiveAnimation.asset(
-                'assets/rive/Bravo_Animation.riv',
+              child: RiveAssetWidget(
+                assetPath: 'assets/rive/Bravo_Animation.riv',
                 fit: BoxFit.contain,
               ),
             ),
@@ -578,8 +580,8 @@ class _OnboardingFlowState extends State<OnboardingFlow> {
                     curve: Curves.easeInOutCubic,
                     width: (_isBravoTransitioning || _step >= stepFirstQuestion) ? 110 : 180,
                     height: (_isBravoTransitioning || _step >= stepFirstQuestion) ? 110 : 180,
-                    child: RiveAnimation.asset(
-                      'assets/rive/Bravo_Animation.riv',
+                    child: RiveAssetWidget(
+                      assetPath: 'assets/rive/Bravo_Animation.riv',
                       stateMachines: const ['State Machine 2'],
                       fit: BoxFit.contain,
                     ),
@@ -764,7 +766,8 @@ class _OnboardingFlowState extends State<OnboardingFlow> {
               curve: Curves.easeInOutCubic,
               width: _isBravoTransitioning ? 100 : 180,
               height: _isBravoTransitioning ? 100 : 180,
-              child: RiveAnimation.asset(
+              child: RiveAssetWidget(
+                assetPath:
                 'assets/rive/Bravo_Animation.riv',
                 stateMachines: const ['State Machine 2'],
                 fit: BoxFit.contain,
@@ -856,8 +859,8 @@ class _OnboardingFlowState extends State<OnboardingFlow> {
                         SizedBox(
                           width: 100,
                           height: 100,
-                          child: RiveAnimation.asset(
-                            'assets/rive/Bravo_Animation.riv',
+                          child: RiveAssetWidget(
+                            assetPath: 'assets/rive/Bravo_Animation.riv',
                             stateMachines: const ['State Machine 2'],
                             fit: BoxFit.contain,
                           ),
@@ -985,8 +988,8 @@ class _OnboardingFlowState extends State<OnboardingFlow> {
                 SizedBox(
                   width: 100,
                   height: 100,
-                  child: RiveAnimation.asset(
-                    'assets/rive/Bravo_Animation.riv',
+                  child: RiveAssetWidget(
+                    assetPath: 'assets/rive/Bravo_Animation.riv',
                     stateMachines: const ['State Machine 2'],
                     fit: BoxFit.contain,
                   ),
@@ -1590,7 +1593,7 @@ class _MessageBubbleTrianglePainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
       ..color = const Color(0xFFF5F5F5) // Same gray as bubble
-      ..style = PaintingStyle.fill;
+      ..style = ui.PaintingStyle.fill;
 
     final path = Path();
     // Create a downward-pointing triangle
@@ -1612,7 +1615,7 @@ class _BubbleTailPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
       ..color = const Color(0xFFF5F5F5) // Same color as bubble
-      ..style = PaintingStyle.fill;
+      ..style = ui.PaintingStyle.fill;
 
     final path = Path();
     // Create a left-pointing triangle tail
